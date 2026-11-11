@@ -1,0 +1,36 @@
+services:
+  db:
+    image: postgres:16
+    container_name: financas_db
+    environment:
+      POSTGRES_USER: financas
+      POSTGRES_PASSWORD: financas
+      POSTGRES_DB: financas
+    volumes:
+      - financas_db_data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U financas -d financas"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  api:
+    build: .
+    container_name: financas_api
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      DATABASE_URL: postgresql+psycopg2://financas:financas@db:5432/financas
+      SECRET_KEY: dev-secret-key-change-in-production
+      ACCESS_TOKEN_EXPIRE_MINUTES: 30
+      ALGORITHM: HS256
+    ports:
+      - "8000:8000"
+    volumes:
+      - .:/app
+
+volumes:
+  financas_db_data:

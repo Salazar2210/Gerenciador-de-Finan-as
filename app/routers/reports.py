@@ -1,4 +1,4 @@
-from datetime import date, datetime
+from datetime import UTC, date, datetime
 from decimal import ROUND_HALF_UP, Decimal
 
 from fastapi import APIRouter, Depends, Query
@@ -138,7 +138,7 @@ def monthly_evolution(
     db: Session = Depends(get_db),
     current_user=Depends(get_current_user),
 ):
-    now = datetime.utcnow()
+    now = datetime.now(UTC)
     # monta lista dos últimos N meses terminando no mês atual, mais antigo primeiro
     base_year = now.year
     base_month = now.month

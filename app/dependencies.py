@@ -1,18 +1,12 @@
-from collections.abc import Generator
-
 from fastapi import Depends, HTTPException, status
 from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
 from sqlalchemy.orm import Session
 
-from app.core.database import get_db as _get_db
+from app.core.database import get_db
 from app.core.security import decode_access_token
 from app.models.user import User
 
 security = HTTPBearer()
-
-
-def get_db() -> Generator[Session, None, None]:
-    yield from _get_db()
 
 
 def get_current_user(
